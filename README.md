@@ -15,28 +15,30 @@ Gradle:
 
 Maven: 
 
-```<dependency>
-	<groupId>com.github.sweepin</groupId>
-	<artifactId>sweepinconnect</artifactId>
-	<version>1.6.0</version>
-	<type>pom</type>
-</dependency>```
+```
+<dependency>
+   <groupId>com.github.sweepin</groupId>
+   <artifactId>sweepinconnect</artifactId>
+   <version>1.6.0</version>
+   <type>pom</type>
+</dependency>
+```
 
 ## Installation
 
-#Step 1 : 
+###Step 1 : 
 
 Init the SDK in the onCreate() of your application class.
 
 `ProximitiesConfig.initSweepinConnectSdk(this);`
 
-#Step 2 :
+###Step 2 :
 
 Start the service to enable the reception of campaigns.
 
 `ProximitiesConfig.startSweepinConnect(this, boolean openSettings);`
 
-#Step 3 : 
+###Step 3 : 
 
 You need an app id and an app secret to make authorized requests to our back office. Declare the following meta-data in your manifest:
 
@@ -58,3 +60,10 @@ ___
 SweepinConnect is available under the MIT license. See the LICENSE file for more info.
 
   [1]: http://www.sweepin.fr/contact
+
+	 
+
+ 
+
+
+
