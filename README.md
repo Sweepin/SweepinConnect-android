@@ -53,7 +53,7 @@ You need an app id and an app secret to make authorized requests to our back off
 ```
 
 ###Congratulations, your app is now ready to go ! 
-#####Go to <a href='http://manager.sweepin.fr/admin/login/?ref=/'>The Sweepin Manager interface</a> to create your first animation !
+#####Go to <a href='http://manager.sweepin.fr/admin/login/?ref=/'>The Sweepin Manager interface</a> to create your first campaign !
 
 ## License
 ___
