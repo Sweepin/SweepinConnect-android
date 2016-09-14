@@ -11,7 +11,7 @@ Watch the analytics data on our charts, and get the visitor's traffic in real ti
 
 Gradle:
 
-`compile 'com.github.sweepin:sweepinconnect:1.6.1'`
+`compile 'com.github.sweepin:sweepinconnect:1.6.2'`
 
 Maven: 
 
@@ -19,7 +19,7 @@ Maven:
 <dependency>
    <groupId>com.github.sweepin</groupId>
    <artifactId>sweepinconnect</artifactId>
-   <version>1.6.1</version>
+   <version>1.6.2</version>
    <type>pom</type>
 </dependency>
 ```
