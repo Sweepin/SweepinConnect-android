@@ -11,6 +11,7 @@ ___
 - [Location changes](#locationChanges)
 - [Access location permission](#accessLocation)
 - [Get partners and their content](#getPartners)
+- [Get campaigns by user action](#getCampaignsByUserAction)
 - [Disable campaigns](#disable_campaigns)
 - [Behavior after the reception of a campaign](#behaviorAfterCampaignReception)
 - [Simple notifications (deep links..)](#simpleNotification)
@@ -20,7 +21,6 @@ ___
 - [Handle URL in campaigns](#handleURL)
 - [Share fragment](#share)
 - [About some customization](#customization)
-- [SweepinConnect Example](#example)
 
 <div id='introduction'/>
 # Introduction
@@ -219,6 +219,29 @@ if(partners != null && !partners.isEmpty()){
 }
 ```
 
+<div id='getCampaignsByUserAction'/>
+# Get campaigns by user action
+
+You have a listener at your disposal to request specific campaigns based on user actions:
+
+```groovy
+ProximitiesConfig.USER_ACTION_CAMPAIGN_RECEIVED // returns all campaigns received by the user
+ProximitiesConfig.USER_ACTION_CAMPAIGN_SAVED // returns all campaigns added in favourites by the user
+
+ProximitiesConfig.getCampaignsByUserAction(getApplicationContext(), ProximitiesConfig.USER_ACTION_CAMPAIGN_RECEIVED, 
+	new OnGetCampaignsByUserActionListener() {
+            @Override
+            public void onGetCampaignsByUserAction(List<Campaign> campaigns) {
+              // TO DO
+            }
+
+            @Override
+            public void onGetCampaignsByUserActionError() {
+              // TO DO
+            }
+});
+```
+
 <div id='disable_campaigns'/>
 # Disable campaigns
 
@@ -238,6 +261,28 @@ ProximitiesConfig.setMainActivity(this, MainActivity.class);
 ```
 
 In case the application was opened or in background at the reception, users will retrieve the last activity they were in.
+
+A listener is available to catch the reception and opening of campaigns :
+
+```groovy
+ProximitiesConfig.setOnOpenCampaignListener(new OnOpenCampaignListener() {
+            @Override
+            public void onOpenCampaign(Activity activity, Campaign campaign) {
+                // TO DO
+            }
+});
+```
+
+You may need a callback everytime the user closes a campaign activity (multi or not) they just received in order to refresh a list for example. You can use the following one :
+
+```groovy
+ProximitiesConfig.setOnCloseReceivedCampaignListener(new OnCloseReceivedCampaignListener() {
+            @Override
+            public void onCloseCampaign() {
+                // TO DO
+            }
+});
+```
 
 <div id='simpleNotification'/>
 # Simple notification (deep links, ad servers, etc.)
@@ -409,10 +454,6 @@ ProximitiesConfig.getInstance().setSimplePushDialogDesign(int colorDialog, int c
 
 Note : once again, use those methods in the OnCreate() of your application class.
 
-<div id='example'/>
-# SweepinConnect Example
-
-Because code speaks louder than words, you have at your disposal an example project to help you in your integration.
 
 
 
