@@ -26,19 +26,19 @@ Maven:
 
 ## Installation
 
-###Step 1 : 
+### Step 1 : 
 
 Init the SDK in the onCreate() of your application class.
 
 `ProximitiesConfig.initSweepinConnectSdk(this);`
 
-###Step 2 :
+### Step 2 :
 
 Start the service to enable the reception of campaigns.
 
 `ProximitiesConfig.startSweepinConnect(this, boolean openSettings);`
 
-###Step 3 : 
+### Step 3 : 
 
 You need an app id and an app secret to make authorized requests to our back office. Declare the following meta-data in your manifest:
 
