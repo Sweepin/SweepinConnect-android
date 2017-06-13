@@ -1,7 +1,7 @@
 <p align="center" >
   <img src="Images/logoSweepinConnect-850x300.png" alt="SweepinConnectLogo" title="SweepinConnectLogo">
 </p>
-___
+
 # SweepinConnect-android : Advanced configuration
 ## Table of contents
 
@@ -23,6 +23,7 @@ ___
 - [About some customization](#customization)
 
 <div id='introduction'/>
+
 # Introduction
 
 Once you integrated SweepinConnect-android in your project, you'll have the possibility to configure important features and interact with crucial elements of the library. 
@@ -31,6 +32,7 @@ All the possibilities are listed in this document.
 Note: It is important to note that certain methods and listeners need to be implemented in your application class since the reception of campaigns is available when the app is killed. These cases will be detailed in the concerned sections.
 
 <div id="beacon"/>
+
 # Beacon scanner
 
 By default, the beacon scanner is configured to only care for specific uuids. However, it is possible to add a list of uuids to the scanner and configure campaigns on your own beacons.
@@ -61,6 +63,7 @@ public void onScannedBeacons(Collection<Beacon> beacons) {
 ```
 
 <div id='nfc_qrcodes'/>
+
 # Use NFC and QR codes
 
 The SweepinConnect library offers you the possibility to use NFC tags and QR codes as transmitters. In order to make those technologies work, you need to add the following intent-filters in one of your activity in the AndroidManifest.
@@ -130,6 +133,7 @@ public void onErrorOnQrCodeResponse() {
 
 
 <div id='locationChanges'/>
+
 # Location changes
 
 You have the possibility of requesting a location update that will automatically set the system at the new location. It is recommended to not abuse the use of this function since location updates will have an impact on the battery life.
@@ -148,6 +152,7 @@ double latitude = lastLocation.latitude;
 double longitude = lastLocation.longitude;
 ```
 <div id='accessLocation'/>
+
 # Access location permission (>= Android M)
 
 To get the service started on Android M, the user have to grant a permission to retrieve his current position. Without it the reception of animation is not possible. 
@@ -166,6 +171,7 @@ public void onAccessLocationDenied() {
 ```
 
 <div id='getPartners'/>
+
 # Get partners and their content 
 
 You have the possibility of retrieving the list of partners with all their content (points of interest, transmitters, campaigns..).
@@ -220,6 +226,7 @@ if(partners != null && !partners.isEmpty()){
 ```
 
 <div id='getCampaignsByUserAction'/>
+
 # Get campaigns by user action
 
 You have a listener at your disposal to request specific campaigns based on user actions:
@@ -243,6 +250,7 @@ ProximitiesConfig.getCampaignsByUserAction(getApplicationContext(), ProximitiesC
 ```
 
 <div id='disable_campaigns'/>
+
 # Disable campaigns
 
 It is possible to prevent the display of campaigns at anytime and re-enable it later using the following method.
@@ -252,6 +260,7 @@ ProximitiesConfig.disableAllCampaigns(Context ctx, boolean disable);
 ```
 
 <div id='behaviorAfterCampaignReception'/>
+
 # Behavior after the reception of a campaign
 
 If a campaign is received when your app is not running, use the method below to configure an activity that will be brought to front as soon as the campaign is closed.
@@ -285,6 +294,7 @@ ProximitiesConfig.setOnCloseReceivedCampaignListener(new OnCloseReceivedCampaign
 ```
 
 <div id='simpleNotification'/>
+
 # Simple notification (deep links, ad servers, etc.)
 
 When you create a simple notification on the manager, it is possible to add a unique identifier that can be use later by the developer to run a certain piece of code (and use deep links for example). 
@@ -312,6 +322,7 @@ To use this listener, you need to implements OnCatchIdentifierListener in your a
 ```
 
 <div id='register_users'/>
+
 # Register users in our system
 
 At one point, your app's customer is going to login (or auto-login) to your app. If you want the SweepinConnect system to be aware of your users information, you'll need to register this user to the system. For example, you can call the registerUser() method on your login/autologin routine method. 
@@ -330,6 +341,7 @@ ProximitiesConfig.registerUser(identifier, parameters);
 Note : You need to choose one of you parameter as identifier, it is highly recommended to use the customer's email as such.
 
 <div id='favorites'/>
+
 # Favorites
 
 The SDK contains a default fragment named 'FavoritesFragment' that you can call where you desire to display the favorites in your application. 
@@ -358,6 +370,7 @@ ProximitiesConfig.getInstance().disableFavorites(boolean disableFav);
 ```
 
 <div id='campaignMenu'/>
+
 # Set up your own campaign menu
 
 By default, a campaign's toolbar contains only one menu item to allow users to save the campaign in their favorites or to remove it.
@@ -387,6 +400,7 @@ public void customizeMenu(Menu menu) {
 Note : Don't forget you need to add those lines in the OnCreate() of your application class.
 
 <div id='handleURL'/>
+
 # Handle URL inside campaigns
 
 Most of the campaigns available in the back-office can contain URLs in the text section. By default, a click on an URL will open an activity with a full size webview to host the webpage but this behavior can be modified using OnCampaignURLClickListener.
@@ -408,6 +422,7 @@ In case you want to enable the default view anyway inside the listener, just ret
 Keep in mind that you need to put this in the onCreate() of your application class.
 
 <div id='share'/>
+
 # Share campaigns
 
 It is possible to add a fragment at the bottom of the received configurable campaign to give the possibility of sharing the content. You can create yours using the ShareFragment by inheritance. 
@@ -431,6 +446,7 @@ ProximitiesConfig.getInstance().setShareFragment(getApplicationContext(), MyShar
 ```
 
 <div id='customization'/>
+
 # About some customization
 
 When the system receives a campaign without the app in foreground, a notification is send to the user. This notification is customizable since you can set the icon of your choice, select the text to display if multiple campaigns are received simultaneously and finally the phone's colored LED notification light.
