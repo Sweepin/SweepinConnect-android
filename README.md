@@ -38,6 +38,8 @@ Start the service to enable the reception of campaigns.
 
 `ProximitiesConfig.startSweepinConnect(this, boolean openSettings);`
 
+Note : The parameter 'openSettings', if set to true, starts an activity to encourage users to enable everything needed or recommanded for the system to work at its best (location, bluetooth, wifi..). You can choose to disable it and/or to build your own if you want to.
+
 ### Step 3 : 
 
 You need an app id and an app secret to make authorized requests to our back office. Declare the following meta-data in your manifest:
@@ -51,6 +53,8 @@ You need an app id and an app secret to make authorized requests to our back off
     android:name="proximities:appSecret"
     android:value="YOUR_APP_SECRET"/>
 ```
+
+#### To know more about what you can do with Sweepin Connect, go to the <a href='https://github.com/Sweepin/SweepinConnect-android/blob/master/Advanced_Configurations.md'>Advanced configuration</a> documentation.
 
 ### Congratulations, your app is now ready to go ! 
 ##### Go to <a href='http://manager.sweepin.fr/admin/login/?ref=/'>The Sweepin Manager interface</a> to create your first campaign !
