@@ -11,7 +11,7 @@ Watch the analytics data on our charts, and get the visitor's traffic in real ti
 
 Gradle:
 
-`compile 'com.github.sweepin:sweepinconnect:1.7.0'`
+`compile 'com.github.sweepin:sweepinconnect:1.7.1'`
 
 Maven: 
 
@@ -19,7 +19,7 @@ Maven:
 <dependency>
    <groupId>com.github.sweepin</groupId>
    <artifactId>sweepinconnect</artifactId>
-   <version>1.7.0</version>
+   <version>1.7.1</version>
    <type>pom</type>
 </dependency>
 ```
@@ -31,6 +31,8 @@ Maven:
 Init the SDK in the onCreate() of your application class.
 
 `ProximitiesConfig.initSweepinConnectSdk(this);`
+
+Note : Don't forget to add android:name=".MyApp" in the <application> element of your manifest.
 
 ### Step 2 :
 
