@@ -32,7 +32,7 @@ Init the SDK in the onCreate() of your application class.
 
 `ProximitiesConfig.initSweepinConnectSdk(this);`
 
-Note : Don't forget to add android:name=".MyApp" in the <application> element of your manifest.
+Note : Don't forget to add android:name=".MyApp" in the application element of your manifest.
 
 ### Step 2 :
 
