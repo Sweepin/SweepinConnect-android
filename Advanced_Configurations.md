@@ -249,6 +249,12 @@ ProximitiesConfig.getCampaignsByUserAction(getApplicationContext(), ProximitiesC
 });
 ```
 
+You can then display a campaign using : 
+
+```groovy
+ ProximitiesConfig.openCampaign(Context context, Campaign campaign);
+```
+
 <div id='disable_campaigns'/>
 
 # Disable campaigns
