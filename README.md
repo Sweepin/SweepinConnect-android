@@ -11,7 +11,7 @@ Watch the analytics data on our charts, and get the visitor's traffic in real ti
 
 Gradle:
 
-`compile 'com.github.sweepin:sweepinconnect:1.7.1'`
+`compile 'com.github.sweepin:sweepinconnect:2.0.1'`
 
 Maven: 
 
@@ -19,7 +19,7 @@ Maven:
 <dependency>
    <groupId>com.github.sweepin</groupId>
    <artifactId>sweepinconnect</artifactId>
-   <version>1.7.1</version>
+   <version>2.0.1</version>
    <type>pom</type>
 </dependency>
 ```
@@ -30,7 +30,7 @@ Maven:
 
 Init the SDK in the onCreate() of your application class.
 
-`ProximitiesConfig.initSweepinConnectSdk(this);`
+`ProximitiesConfig.getInstance().initSweepinConnectSdk(this);`
 
 Note : Don't forget to add android:name=".MyApp" in the application element of your manifest.
 
@@ -38,9 +38,37 @@ Note : Don't forget to add android:name=".MyApp" in the application element of y
 
 Start the service to enable the reception of campaigns.
 
-`ProximitiesConfig.startSweepinConnect(this, boolean openSettings);`
+```
+public class MyActivity extends AppCompatActivity implements OnSweepinConnectServiceReady, OnAccessLocationListener {
 
-Note : The parameter 'openSettings', if set to true, starts an activity to encourage users to enable everything needed or recommanded for the system to work at its best (location, bluetooth, wifi..). You can choose to disable it and/or to build your own if you want to.
+	private ProximitiesConfig mPrxConfig;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		mPrxConfig = ProximitiesConfig.getInstance();
+		mPrxConfig.startSweepinConnectService(this);
+	}
+
+	@Override
+	public void onSweepinConnectServiceReady() {
+		mPrxConfig.askLocationPermission(this);
+	}
+
+	@Override
+	public void onAccessLocationGranted() {
+		mPrxConfig.startLocationManager();
+		mPrxConfig.startBeaconManager();
+	}
+
+	@Override
+	public void onAccessLocationDenied() {
+		
+	}
+
+}
+```
+Once the service is ready, you need to ask the location permission for devices above Api level 23. You can use your own implementation if you want to.
+Once the permission is granted, you can start the location manager and/or the beacon manager depending on your needs. 
 
 ### Step 3 : 
 
