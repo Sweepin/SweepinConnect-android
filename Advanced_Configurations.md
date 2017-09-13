@@ -9,7 +9,7 @@
 - [Beacon scanner](#beacon)
 - [Use NFC and QR codes](#nfc_qrcodes)
 - [Location changes](#locationChanges)
-- [Access location permission](#accessLocation)
+- [SQLite Database](#sqlite_database)
 - [Get partners and their content](#getPartners)
 - [Get campaigns by user action](#getCampaignsByUserAction)
 - [Disable campaigns](#disable_campaigns)
@@ -20,6 +20,7 @@
 - [Set up your own campaign menu](#campaignMenu)
 - [Handle URL in campaigns](#handleURL)
 - [Share fragment](#share)
+- [Stop Sweepin Connect Service](#stop_service)
 - [About some customization](#customization)
 
 <div id='introduction'/>
@@ -29,7 +30,7 @@
 Once you integrated SweepinConnect-android in your project, you'll have the possibility to configure important features and interact with crucial elements of the library. 
 All the possibilities are listed in this document.
 
-Note: It is important to note that certain methods and listeners need to be implemented in your application class since the reception of campaigns is available when the app is killed. These cases will be detailed in the concerned sections.
+Note: It is important to note that most methods and listeners need to be implemented in your application class since the reception of campaigns is available when the app is killed.
 
 <div id="beacon"/>
 
@@ -44,8 +45,8 @@ ProximitiesConfig.addUuidsToBeaconScanner(List<String> listOfUuids);
 You can modify the duration and the frequency of each beacon scan. The default values set below are recommended by the Altbeacon library.
 
 ```groovy
-ProximitiesConfig.setBackgroundScanPeriod(this, 5000, 25000);
-ProximitiesConfig.setForegroundScanPeriod(this, 1100, 0);
+ProximitiesConfig.setBackgroundScanPeriod(5000, 25000);
+ProximitiesConfig.setForegroundScanPeriod(1100, 0);
 ```
 
 You may need to retrieve all scanned beacons simply to identify them or to perform a particular action. If it is the case, you can implement the OnScannedBeaconsListener.
@@ -62,20 +63,34 @@ public void onScannedBeacons(Collection<Beacon> beacons) {
 }
 ```
 
+A new way of detecting beacon has been implemented in the v2 of the SweepinConnect SDK called 'Closest Beacon Mode'.
+This mode still detects all beacons in its range but only consider the closest one and ignore the rest. It is particularly useful if you plan to have a route of beacons and the order for receiving the information is important.
+
+```groovy
+ProximitiesConfig.getInstance().enableClosestBeaconMode(boolean enable);
+```
+     
+Note : The beacon configuration is extremely important for the effectiveness of this method. Configure your beacons with the same transmission power and broadcasting interval.
+
 <div id='nfc_qrcodes'/>
 
 # Use NFC and QR codes
 
-The SweepinConnect library offers you the possibility to use NFC tags and QR codes as transmitters. In order to make those technologies work, you need to add the following intent-filters in one of your activity in the AndroidManifest.
+The SweepinConnect library gives you the possibility to use NFC tags and QR codes as transmitters. In order to make those technologies work, you need to add the following intent-filters in one of your activity in the AndroidManifest.
 
 ```groovy
 <!--NFC-->
 <intent-filter>
-<action android:name="android.nfc.action.NDEF_DISCOVERED" />
-<category android:name="android.intent.category.DEFAULT" />
-<data
-    android:host="your_host"
-    android:scheme="your_scheme" />
+	<action android:name="android.nfc.action.NDEF_DISCOVERED" />
+	<category android:name="android.intent.category.DEFAULT" />
+	<data
+            android:host="connect.sweepin.fr"
+            android:scheme="http"
+            android:pathPattern="@string/prxsc_intent_filter_path_pattern" />
+	<data
+            android:host="connect.sweepin.fr"
+            android:scheme="https"
+            android:pathPattern="@string/prxsc_intent_filter_path_pattern" />
 </intent-filter>
 
 <!--Qr codes-->
@@ -83,13 +98,16 @@ The SweepinConnect library offers you the possibility to use NFC tags and QR cod
 <action android:name="android.intent.action.VIEW"/>
 <category android:name="android.intent.category.DEFAULT"/>
 <category android:name="android.intent.category.BROWSABLE"/>
-<data
-    android:host="your_host"
-    android:scheme="your_scheme"/>
+	<data
+            android:host="connect.sweepin.fr"
+            android:scheme="http"
+            android:pathPattern="@string/prxsc_intent_filter_path_pattern" />
+	<data
+            android:host="connect.sweepin.fr"
+            android:scheme="https"
+            android:pathPattern="@string/prxsc_intent_filter_path_pattern" />
 </intent-filter>
 ```
-
-Concerning the host and scheme of each intent-filter, it has to be those you'll enter at the creation of your transmitters in the back-office. 
 
 To properly handle NFC intents, you also need to declare this permission : 
 
@@ -97,19 +115,45 @@ To properly handle NFC intents, you also need to declare this permission :
 <uses-permission android:name="android.permission.NFC" />
 ```
 
-All you need to do now is add those two following lines in the onCreate() of your activity.
+Once your intent-filters are in place, you will see that path patterns are not defined yet. 
+Add the following string to your xml file, do not forget to add your appId at the end:
 
 ```groovy
-ProximitiesConfig.readQrCode(getIntent().getDataString());
-ProximitiesConfig.readNfc(this, getIntent());
+<string name="prxsc_intent_filter_path_pattern" translatable="false">"/r/transmitters/.*\\/.*\\/.*\\/<your-appId>"</string>
 ```
 
-Once is done, every NFC tag and/or Qr code respecting your host and scheme model will open your app.
+The only missing part is how to handle the intent generated by a scan of a qr code or a NFC tag. 
+See below how your activity should look. 
+
+```groovy
+private ProximitiesConfig mPrxConfig;
+
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+	..
+	mPrxConfig = ProximitiesConfig.getInstance();
+	handleNfcAndQrCode(getIntent());
+	..
+}
+
+@Override
+protected void onNewIntent(Intent intent) {
+	super.onNewIntent(intent);
+	handleNfcAndQrCode(intent);
+}
+
+private void handleNfcAndQrCode(Intent intent){
+        mPrxConfig.readQrCode(intent.getDataString());
+        mPrxConfig.readNfc(intent);
+}
+```
+
+Once is done, every NFC tag and/or Qr code respecting your intent-filter configuration will open your app.
 
 One last thing concerning Qr Codes, if you desire to have your own Qr code reader in your app, just use the one available in SweepinConnect :
 
 ```groovy
-ProximitiesConfig.startQrCodeReader(this);
+ProximitiesConfig.getInstance().startQrCodeReader();
 ```
 
 Then you have access to the OnResponseFromQrScanListener() to handle different cases after the scan :
@@ -147,39 +191,42 @@ You can implement the OnLocationChangeListener that will be called when a locati
 In case you need to know the last known location of the customer, use this method :
 
 ```groovy
-LatLng lastLocation = ProximitiesConfig.getLastKnownLocation(this);
+LatLng lastLocation = ProximitiesConfig.getInstance().getLastKnownLocation(this);
 double latitude = lastLocation.latitude;
 double longitude = lastLocation.longitude;
 ```
-<div id='accessLocation'/>
 
-# Access location permission (>= Android M)
-
-To get the service started on Android M, the user have to grant a permission to retrieve his current position. Without it the reception of animation is not possible. 
-To handle the user's response to this permission you have at your disposal the OnAccessLocationListener(). 
+By default, location requests uses the PRIORITY_BALANCES_POWER_ACCURACY to limit the battery comsumption but the choice is yours :
 
 ```groovy
-@Override
-public void onAccessLocationGranted() {
-    //your code
-}
-
-@Override
-public void onAccessLocationDenied() {
-    //your code
-}
+ProximitiesConfig.getInstance().setLocationPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 ```
+
+<div id='sqlite_database'/>
+
+# SQLite Database
+
+A Sqlite database is created by default to store campaign's logs when the network is unavailable and to store campaigns when a user is near a point of interest where 'Background Fetch'* is activated.
+If, for example, the network availability is not an issue, you can choose to disable the creation of this database.
+
+```groovy
+ProximitiesConfig.getInstance().enableSQLiteDatabase(boolean enable);
+```
+
+* Background Fetch : This option concerns points of interest where the network is not reliable. To activate this option, you need to contact us directly.
 
 <div id='getPartners'/>
 
 # Get partners and their content 
 
 You have the possibility of retrieving the list of partners with all their content (points of interest, transmitters, campaigns..).
-The request needs 2 parameters : the number of elements you want to retrieve (the x closest partners) and finally the type of campaign you looking for.
+The request needs 2 parameters : the number of elements you want to retrieve (the x closest partners) and the type of campaign you looking for.
 
-For the 'type' parameter, use the following constants in ProximitiesConfig :
+To get all partners, set the 'nbElements' parameter to 0.
+
+For the 'type' parameter, use the following constants :
 ```groovy
-ProximitiesConfig.TYPE_ALL // use this type if campaigns are not what you looking for in your request
+ProximitiesConfig.TYPE_ALL // use this to get all types of campaigns
 ProximitiesConfig.TYPE_INFORMATION
 ProximitiesConfig.TYPE_PROMOTION
 ProximitiesConfig.TYPE_CULTURE
@@ -187,7 +234,7 @@ ProximitiesConfig.TYPE_EVENT
 ```
 
 ```groovy
-ProximitiesConfig.getPartners(int nbElements, String type);
+ProximitiesConfig.getInstance().getPartners(int nbElements, String type, OnRetrievePartnersListener listener);
 ```
 
 You can now handle the response with OnRetrievePartnersListener. You can see below how to retrieve the content of each partner.
@@ -231,10 +278,13 @@ if(partners != null && !partners.isEmpty()){
 
 You have a listener at your disposal to request specific campaigns based on user actions:
 
-```groovy
-ProximitiesConfig.USER_ACTION_CAMPAIGN_RECEIVED // returns all campaigns received by the user
-ProximitiesConfig.USER_ACTION_CAMPAIGN_SAVED // returns all campaigns added in favourites by the user
 
+`ProximitiesConfig.USER_ACTION_ALL_CAMPAIGN_RECEIVED` : returns all campaigns received by the user
+`ProximitiesConfig.USER_ACTION_CAMPAIGN_RECEIVED_IN_FOREGROUND` : returns all campaigns received in foreground by the user
+`ProximitiesConfig.USER_ACTION_CAMPAIGN_RECEIVED_IN_BACKGROUND` : returns all campaigns received in background by the user
+`ProximitiesConfig.USER_ACTION_CAMPAIGN_SAVED` : returns all campaigns added in favourites by the user
+
+```groovy
 ProximitiesConfig.getCampaignsByUserAction(getApplicationContext(), ProximitiesConfig.USER_ACTION_CAMPAIGN_RECEIVED, 
 	new OnGetCampaignsByUserActionListener() {
             @Override
@@ -252,7 +302,7 @@ ProximitiesConfig.getCampaignsByUserAction(getApplicationContext(), ProximitiesC
 You can then display a campaign using : 
 
 ```groovy
- ProximitiesConfig.openCampaign(Context context, Campaign campaign);
+ ProximitiesConfig.getInstance().openCampaign(Campaign campaign);
 ```
 
 <div id='disable_campaigns'/>
@@ -262,7 +312,7 @@ You can then display a campaign using :
 It is possible to prevent the display of campaigns at anytime and re-enable it later using the following method.
 
 ```groovy
-ProximitiesConfig.disableAllCampaigns(Context ctx, boolean disable);
+ProximitiesConfig.getInstance().disableAllCampaigns(boolean disable);
 ```
 
 <div id='behaviorAfterCampaignReception'/>
@@ -272,7 +322,7 @@ ProximitiesConfig.disableAllCampaigns(Context ctx, boolean disable);
 If a campaign is received when your app is not running, use the method below to configure an activity that will be brought to front as soon as the campaign is closed.
 
 ```groovy
-ProximitiesConfig.setMainActivity(this, MainActivity.class);
+ProximitiesConfig.setMainActivity(MainActivity.class);
 ```
 
 In case the application was opened or in background at the reception, users will retrieve the last activity they were in.
@@ -288,15 +338,15 @@ ProximitiesConfig.setOnOpenCampaignListener(new OnOpenCampaignListener() {
 });
 ```
 
-You may need a callback everytime the user closes a campaign activity (multi or not) they just received in order to refresh a list for example. You can use the following one :
+You may need a callback everytime the user closes a campaign activity (multi or not) in order to refresh a list for example. You can use the following one :
 
 ```groovy
-ProximitiesConfig.setOnCloseReceivedCampaignListener(new OnCloseReceivedCampaignListener() {
+ProximitiesConfig.setOnCloseCampaignListener(new OnCloseCampaignListener() {
             @Override
-            public void onCloseCampaign() {
-                // TO DO
+            public void onCloseCampaign(boolean isReceived, List<Campaign> campaigns) {
+               // TO DO
             }
-});
+        });
 ```
 
 <div id='simpleNotification'/>
@@ -358,13 +408,13 @@ You can also create your own using the 'BaseFavoritesFragment' by inheritance an
 public class MyFavoritesFragment extends BaseFavoritesFragment{
 
 	@Override
-	public void onReceiveFavorites(List<Campaign> favorites) {
-	    super.onReceiveFavorites(favorites);
+    	public void onGetFavorites(List<Campaign> favorites) {
+		super.onGetFavorites(favorites);
 	}
 
 	@Override
-    	public void onErrorCallbackFavorites() {
-            super.onErrorCallbackFavorites();
+    	public void onGetFavoritesError() {
+        	super.onGetFavoritesError();
     	}	
 }
 ```
@@ -448,34 +498,44 @@ public class ShareCampaignFragment extends ShareFragment {
 Once your fragment is created, you need to send it to the SweepinConnect library in the OnCreate() of your application class.
 
 ```groovy
-ProximitiesConfig.getInstance().setShareFragment(getApplicationContext(), MyShareFragment.class);
+ProximitiesConfig.getInstance().setShareFragment(MyShareFragment.class);
+```
+
+<div id='stop_service'/>
+
+# Stop Sweepin Connect Service
+
+Once the Sweepin Connect service is started, it will run in background on your device. You can choose to stop the service anytime you want using :
+
+```groovy
+ProximitiesConfig.getInstance().stopSweepinConnectService();
 ```
 
 <div id='customization'/>
 
 # About some customization
 
-When the system receives a campaign without the app in foreground, a notification is send to the user. This notification is customizable since you can set the icon of your choice, select the text to display if multiple campaigns are received simultaneously and finally the phone's colored LED notification light.
+To customize, you just need to name resources in your app as follow :
 
-```groovy
-ProximitiesConfig.setNotificationStyle(Context ctx, int notificationIcon, int multiCampaignsContent, int lightColor);
-```
+strings.xml
+`prxsc_multi_campaigns_title` : title of the activity listing all campaigns just received (and of the notification if in background)
+`prxsc_multi_campaigns_notification_content` : content of the notification
 
-You can choose to customize the look and the title of the multiple campaigns activity.
+drawable.xml
+`prxsc_ic_notification` : icon of the notification for multiple campaigns
+`prxsc_ic_small_notification` : icon for the status bar
+`prxsc_ic_favorite_empty` : action bar icon when the campaign is not in the user's favorites
+`prxsc_ic_favorite_added` :action bar icon when the campaign is in the user's favorites
 
-```groovy
-ProximitiesConfig.getInstance().setMultiCampaignsStyle(int title, int colorTitle, int colorToolbar);
-```
+colors.xml
+`prxsc_notification_light` : color of the led when you received a notification
+`prxsc_multi_campaign_title` : your title's font color (for multiple campaigns activity)
+`prxsc_multi_campaign_toolbar` : color of the toolbar (for multiple campaigns activity)
+`prxsc_simple_push_title` : your title's font color (for Simple notification template)
+`prxsc_simple_push_dialog` : color of the dialog (for Simple notification template)
 
-If you chose to keep the dialog displayed when you receive a simple notification (see [Simple Notification](#simpleNotification)), you can customize it as follow :
 
-```groovy
-ProximitiesConfig.getInstance().setSimplePushDialogDesign(int colorDialog, int colorTitle, Typeface font);
-//ProximitiesConfig.getInstance().setSimplePushDialogDesign(android.R.color.black, android.R.color.white, Typeface.DEFAULT);
-```
-
-Note : once again, use those methods in the OnCreate() of your application class.
-
+Note : Use 'setTintOnFavoritesIcons(boolean useTint)' or not depending on your icons (uses the font color).
 
 
 
