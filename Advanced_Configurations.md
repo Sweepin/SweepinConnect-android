@@ -45,9 +45,11 @@ ProximitiesConfig.addUuidsToBeaconScanner(List<String> listOfUuids);
 You can modify the duration and the frequency of each beacon scan. The default values set below are recommended by the Altbeacon library.
 
 ```groovy
-ProximitiesConfig.setBackgroundScanPeriod(5000, 25000);
-ProximitiesConfig.setForegroundScanPeriod(1100, 0);
+ProximitiesConfig.getInstance().setBackgroundScanPeriod(5000, 25000);
+ProximitiesConfig.getInstance().setForegroundScanPeriod(1100, 0);
 ```
+Note: When a beacon is scanned for the first time, an api call is sent to determine if a campaign is linked to this beacon.
+If no campaign is present, api calls are then spaced by 30 seconds to avoid the abuse of server requests.
 
 You may need to retrieve all scanned beacons simply to identify them or to perform a particular action. If it is the case, you can implement the OnScannedBeaconsListener.
 
