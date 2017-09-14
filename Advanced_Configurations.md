@@ -84,11 +84,7 @@ The SweepinConnect library gives you the possibility to use NFC tags and QR code
 	<action android:name="android.nfc.action.NDEF_DISCOVERED" />
 	<category android:name="android.intent.category.DEFAULT" />
 	<data
-            android:host="connect.sweepin.fr"
-            android:scheme="http"
-            android:pathPattern="@string/prxsc_intent_filter_path_pattern" />
-	<data
-            android:host="connect.sweepin.fr"
+            android:host="sweepin.fr"
             android:scheme="https"
             android:pathPattern="@string/prxsc_intent_filter_path_pattern" />
 </intent-filter>
@@ -99,11 +95,7 @@ The SweepinConnect library gives you the possibility to use NFC tags and QR code
 <category android:name="android.intent.category.DEFAULT"/>
 <category android:name="android.intent.category.BROWSABLE"/>
 	<data
-            android:host="connect.sweepin.fr"
-            android:scheme="http"
-            android:pathPattern="@string/prxsc_intent_filter_path_pattern" />
-	<data
-            android:host="connect.sweepin.fr"
+            android:host="sweepin.fr"
             android:scheme="https"
             android:pathPattern="@string/prxsc_intent_filter_path_pattern" />
 </intent-filter>
