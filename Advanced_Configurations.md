@@ -512,20 +512,20 @@ ProximitiesConfig.getInstance().stopSweepinConnectService();
 To customize, you just need to name resources in your app as follow :
 
 ### strings.xml
-`prxsc_multi_campaigns_title` : title of the activity listing all campaigns just received (and of the notification if in background)
+`prxsc_multi_campaigns_title` : title of the activity listing all campaigns just received (and of the notification if in background)<br/>
 `prxsc_multi_campaigns_notification_content` : content of the notification
 
 ### drawable.xml
-`prxsc_ic_notification` : icon of the notification for multiple campaigns
-`prxsc_ic_small_notification` : icon for the status bar
-`prxsc_ic_favorite_empty` : action bar icon when the campaign is not in the user's favorites
+`prxsc_ic_notification` : icon of the notification for multiple campaigns<br/>
+`prxsc_ic_small_notification` : icon for the status bar<br/>
+`prxsc_ic_favorite_empty` : action bar icon when the campaign is not in the user's favorites<br/>
 `prxsc_ic_favorite_added` :action bar icon when the campaign is in the user's favorites
 
 ### colors.xml
-`prxsc_notification_light` : color of the led when you received a notification
-`prxsc_multi_campaign_title` : your title's font color (for multiple campaigns activity)
-`prxsc_multi_campaign_toolbar` : color of the toolbar (for multiple campaigns activity)
-`prxsc_simple_push_title` : your title's font color (for Simple notification template)
+`prxsc_notification_light` : color of the led when you received a notification<br/>
+`prxsc_multi_campaign_title` : your title's font color (for multiple campaigns activity)<br/>
+`prxsc_multi_campaign_toolbar` : color of the toolbar (for multiple campaigns activity)<br/>
+`prxsc_simple_push_title` : your title's font color (for Simple notification template)<br/>
 `prxsc_simple_push_dialog` : color of the dialog (for Simple notification template)
 
 
