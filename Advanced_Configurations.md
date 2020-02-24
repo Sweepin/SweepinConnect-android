@@ -7,6 +7,7 @@
 
 - [Introduction](#introduction)
 - [Beacon scanner](#beacon)
+- [Support for Android 8+](#support_android8)
 - [Use NFC and QR codes](#nfc_qrcodes)
 - [Location changes](#locationChanges)
 - [SQLite Database](#sqlite_database)
@@ -31,6 +32,33 @@ Once you integrated SweepinConnect-android in your project, you'll have the poss
 All the possibilities are listed in this document.
 
 Note: It is important to note that most methods and listeners need to be implemented in your application class since the reception of campaigns is available when the app is killed.
+
+<div id="support_android8"/>
+
+# Support for Android 8+
+
+This section only concerns the SweepinConnect SDK installed on devices with Android 8 or superior.
+
+In order to respect background limitations introduced in Android 8, the SDK had to adapt to provide a solution for receiving campaigns when the app is killed. The background detection for beacons can no longer be as responsive as it was in previous versions of the SweepinConnect SDK without drawbacks. The only way to be able to detect beacons as fast is to use a foreground service. 
+
+By default, the SDK enables a foreground service each time a beacon with an active campaign is nearby. You can enable or disable this behaviour with the following methods.
+
+```groovy
+prxconfig.enableForegroundNotificationForBeacons();
+
+prxconfig.disableForegroundNotificationForBeacons();
+```
+If you decide to disable the foreground notification, campaigns on beacons will only be receivable with your app in the foreground or on background for a short period of time.
+
+This foreground notification can be customized entirely.
+
+#### strings.xml
+`prxsc_foreground_notification_title` : title of the notification<br/>
+`prxsc_foreground_notification_content` : content of the notification<br/>
+
+#### drawable.xml
+`prxsc_ic_small_foreground_notification` : replace the small icon<br/>
+The large icon uses the `prxsc_ic_notification`.<br/>
 
 <div id="beacon"/>
 
