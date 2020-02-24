@@ -6,8 +6,8 @@
 ## Table of contents
 
 - [Introduction](#introduction)
-- [Beacon scanner](#beacon)
 - [Support for Android 8+](#support_android8)
+- [Beacon scanner](#beacon)
 - [Use NFC and QR codes](#nfc_qrcodes)
 - [Location changes](#locationChanges)
 - [SQLite Database](#sqlite_database)
