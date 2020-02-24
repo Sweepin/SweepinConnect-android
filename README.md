@@ -11,7 +11,7 @@ Watch the analytics data on our charts, and get the visitor's traffic in real ti
 
 Gradle:
 
-`compile 'com.github.sweepin:sweepinconnect:2.0.7'`
+`compile 'com.github.sweepin:sweepinconnect:2.1.0'`
 
 Maven: 
 
@@ -19,10 +19,11 @@ Maven:
 <dependency>
    <groupId>com.github.sweepin</groupId>
    <artifactId>sweepinconnect</artifactId>
-   <version>2.0.7</version>
+   <version>2.1.0</version>
    <type>pom</type>
 </dependency>
 ```
+See <a href='https://github.com/Sweepin/SweepinConnect-android/releases'>Release Notes</a>.
 
 ## Installation
 
@@ -83,6 +84,10 @@ You need an app id and an app secret to make authorized requests to our back off
     android:name="proximities:appSecret"
     android:value="YOUR_APP_SECRET"/>
 ```
+
+## R8/Proguard
+
+If you are using R8 or ProGuard you can find a file example <a href='https://github.com/Sweepin/SweepinConnect-android/blob/master/proguard-example.pro'>here</a>.
 
 #### To know more about what you can do with Sweepin Connect, go to the <a href='https://github.com/Sweepin/SweepinConnect-android/blob/master/Advanced_Configurations.md'>Advanced configuration</a> documentation.
 
