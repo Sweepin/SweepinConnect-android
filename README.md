@@ -25,6 +25,8 @@ Maven:
 ```
 See <a href='https://github.com/Sweepin/SweepinConnect-android/releases'>Release Notes</a>.
 
+SweepinConnect requires Android API 16+ and targetSdkVersion 29.
+
 ## Installation
 
 ### Step 1 : 
